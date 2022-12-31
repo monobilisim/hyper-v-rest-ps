@@ -19,5 +19,5 @@
   * Memory bilgileri, [`MSVM_Memory`](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/virtual/msvm-memory) sınıfının özelliklerinden geliyor.
 * VM'in processor bilgisini görüntüleme `/vms/<VM adı>/processor`
   * Processor bilgileri, [`MSVM_Processor`](https://learn.microsoft.com/en-us/windows/win32/hyperv_v2/msvm-processor) sınıfının özelliklerinden geliyor.
-* VM'in storage bilgisini görüntüleme `/vms/<VM adı>/processor`
+* VM'in storage bilgisini görüntüleme `/vms/<VM adı>/storage`
   * Storage bilgileri, [`MSVM_DiskDrive`](https://learn.microsoft.com/en-us/windows/win32/hyperv_v2/msvm-diskdrive) sınıfının özelliklerinden geliyor.
