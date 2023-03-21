@@ -4,10 +4,12 @@ package main
 
 import (
 	"flag"
-	"github.com/kardianos/service"
 	"log"
+	"os"
 	"wmi-rest/conf"
 	"wmi-rest/rest"
+
+	"github.com/kardianos/service"
 )
 
 var logger service.Logger
@@ -29,15 +31,19 @@ func (p *program) Start(s service.Service) error {
 	return nil
 }
 
-func (p *program) run()  {
+func (p *program) run() {
 	c := conf.NewParams()
 	s := rest.NewServer(c.Port)
 	s.Run()
 }
 
 func (p *program) Stop(s service.Service) error {
-	logger.Info("Stopping service...")
-	close(p.exit)
+	if service.Interactive() {
+		os.Exit(0)
+	} else {
+		logger.Info("Stopping service...")
+		close(p.exit)
+	}
 	return nil
 }
 
@@ -52,7 +58,7 @@ func main() {
 		Name:        "wmi-rest",
 		DisplayName: "WMI REST",
 		Description: "Simple REST service for some WMI features",
-		Option: options,
+		Option:      options,
 	}
 
 	prg := &program{}
