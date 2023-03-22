@@ -4,10 +4,11 @@ package rest
 
 import (
 	"encoding/json"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 type Server struct {
@@ -32,6 +33,7 @@ func (s *Server) Run() {
 	r.HandleFunc("/vms/{name}/memory", memory)
 	r.HandleFunc("/vms/{name}/processor", processor)
 	r.HandleFunc("/vms/{name}/storage", storage)
+	r.HandleFunc("/vms/{name}/image", image)
 
 	err := http.ListenAndServe(":"+strconv.Itoa(s.port), r)
 	if err != nil {

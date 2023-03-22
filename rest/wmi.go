@@ -5,9 +5,10 @@ package rest
 import (
 	"encoding/json"
 	"errors"
-	"github.com/gorilla/mux"
 	"net/http"
 	"wmi-rest/wmi"
+
+	"github.com/gorilla/mux"
 )
 
 func vm(w http.ResponseWriter, req *http.Request) {
@@ -153,6 +154,37 @@ func storage(w http.ResponseWriter, req *http.Request) {
 	resp.Result = "success"
 	resp.Message = "Storage info is displayed in data field."
 	resp.Data = s
+
+	jsonResp, _ := json.MarshalIndent(resp, "", "    ")
+	_, _ = w.Write(jsonResp)
+}
+
+func image(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	var resp response
+
+	vars := mux.Vars(req)
+	name, ok := vars["name"]
+	if !ok {
+		httpError(w, errors.New("name is missing in parameters"), http.StatusBadRequest, resp)
+		return
+	}
+
+	i, err := wmi.Image(name)
+	if err != nil {
+		httpError(w, err, http.StatusInternalServerError, resp)
+		return
+	}
+
+	if len(i) == 0 {
+		httpError(w, errors.New("no image info found"), http.StatusNotFound, resp)
+		return
+	}
+
+	resp.Result = "success"
+	resp.Message = "Image info is displayed in data field."
+	resp.Data = i
 
 	jsonResp, _ := json.MarshalIndent(resp, "", "    ")
 	_, _ = w.Write(jsonResp)
