@@ -184,8 +184,7 @@ func image(w http.ResponseWriter, req *http.Request) {
 
 	resp.Result = "success"
 	resp.Message = "Image info is displayed in data field."
-	resp.Data = i
-
+	resp.Data = json.RawMessage(i)
 	jsonResp, _ := json.MarshalIndent(resp, "", "    ")
 	_, _ = w.Write(jsonResp)
 }
