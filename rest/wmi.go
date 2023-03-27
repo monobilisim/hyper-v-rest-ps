@@ -128,7 +128,7 @@ func processor(w http.ResponseWriter, req *http.Request) {
 	_, _ = w.Write(jsonResp)
 }
 
-func storage(w http.ResponseWriter, req *http.Request) {
+func vhd(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	var resp response
@@ -140,38 +140,7 @@ func storage(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	s, err := wmi.Storage(name)
-	if err != nil {
-		httpError(w, err, http.StatusInternalServerError, resp)
-		return
-	}
-
-	if len(s) == 0 {
-		httpError(w, errors.New("no storage info found"), http.StatusNotFound, resp)
-		return
-	}
-
-	resp.Result = "success"
-	resp.Message = "Storage info is displayed in data field."
-	resp.Data = s
-
-	jsonResp, _ := json.MarshalIndent(resp, "", "    ")
-	_, _ = w.Write(jsonResp)
-}
-
-func image(w http.ResponseWriter, req *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	var resp response
-
-	vars := mux.Vars(req)
-	name, ok := vars["name"]
-	if !ok {
-		httpError(w, errors.New("name is missing in parameters"), http.StatusBadRequest, resp)
-		return
-	}
-
-	i, err := wmi.Image(name)
+	i, err := wmi.Vhd(name)
 	if err != nil {
 		httpError(w, err, http.StatusInternalServerError, resp)
 		return
@@ -184,7 +153,9 @@ func image(w http.ResponseWriter, req *http.Request) {
 
 	resp.Result = "success"
 	resp.Message = "Image info is displayed in data field."
+	// Image function returns a byte array, so we need to convert it to json.RawMessage
 	resp.Data = json.RawMessage(i)
+
 	jsonResp, _ := json.MarshalIndent(resp, "", "    ")
 	_, _ = w.Write(jsonResp)
 }

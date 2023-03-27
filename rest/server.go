@@ -32,8 +32,7 @@ func (s *Server) Run() {
 	r.HandleFunc("/vms/{name}", vm)
 	r.HandleFunc("/vms/{name}/memory", memory)
 	r.HandleFunc("/vms/{name}/processor", processor)
-	r.HandleFunc("/vms/{name}/storage", storage)
-	r.HandleFunc("/vms/{name}/image", image)
+	r.HandleFunc("/vms/{name}/vhd", vhd)
 
 	err := http.ListenAndServe(":"+strconv.Itoa(s.port), r)
 	if err != nil {
