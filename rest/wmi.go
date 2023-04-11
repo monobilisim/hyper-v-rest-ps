@@ -23,20 +23,20 @@ func vm(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	vms, err := wmi.VM(name)
+	data, err := wmi.VM(name)
 	if err != nil {
 		httpError(w, err, http.StatusInternalServerError, resp)
 		return
 	}
 
-	if len(vms) == 0 {
+	if len(data) == 0 {
 		httpError(w, errors.New("no VM found"), http.StatusNotFound, resp)
 		return
 	}
 
 	resp.Result = "success"
 	resp.Message = "VM info is displayed in data field."
-	resp.Data = vms
+	resp.Data = json.RawMessage(data)
 
 	jsonResp, _ := json.MarshalIndent(resp, "", "    ")
 	_, _ = w.Write(jsonResp)
@@ -47,82 +47,20 @@ func vms(w http.ResponseWriter, req *http.Request) {
 
 	var resp response
 
-	v, err := wmi.VMs()
+	data, err := wmi.VMs()
 	if err != nil {
 		httpError(w, err, http.StatusInternalServerError, resp)
 		return
 	}
 
-	if len(v) == 0 {
+	if len(data) == 0 {
 		httpError(w, errors.New("no VM found"), http.StatusNotFound, resp)
 		return
 	}
 
 	resp.Result = "success"
 	resp.Message = "VMs are listed in data field."
-	resp.Data = v
-
-	jsonResp, _ := json.MarshalIndent(resp, "", "    ")
-	_, _ = w.Write(jsonResp)
-}
-
-func memory(w http.ResponseWriter, req *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	var resp response
-
-	vars := mux.Vars(req)
-	name, ok := vars["name"]
-	if !ok {
-		httpError(w, errors.New("name is missing in parameters"), http.StatusBadRequest, resp)
-		return
-	}
-
-	m, err := wmi.Memory(name)
-	if err != nil {
-		httpError(w, err, http.StatusInternalServerError, resp)
-		return
-	}
-
-	if len(m) == 0 {
-		httpError(w, errors.New("no memory info found"), http.StatusNotFound, resp)
-		return
-	}
-
-	resp.Result = "success"
-	resp.Message = "Memory info is displayed in data field."
-	resp.Data = m
-
-	jsonResp, _ := json.MarshalIndent(resp, "", "    ")
-	_, _ = w.Write(jsonResp)
-}
-
-func processor(w http.ResponseWriter, req *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	var resp response
-
-	vars := mux.Vars(req)
-	name, ok := vars["name"]
-	if !ok {
-		httpError(w, errors.New("name is missing in parameters"), http.StatusBadRequest, resp)
-		return
-	}
-
-	p, err := wmi.Processor(name)
-	if err != nil {
-		httpError(w, err, http.StatusInternalServerError, resp)
-		return
-	}
-
-	if len(p) == 0 {
-		httpError(w, errors.New("no processor info found"), http.StatusNotFound, resp)
-		return
-	}
-
-	resp.Result = "success"
-	resp.Message = "Processor info is displayed in data field."
-	resp.Data = p
+	resp.Data = json.RawMessage(data)
 
 	jsonResp, _ := json.MarshalIndent(resp, "", "    ")
 	_, _ = w.Write(jsonResp)
@@ -140,21 +78,20 @@ func vhd(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	i, err := wmi.Vhd(name)
+	data, err := wmi.Vhd(name)
 	if err != nil {
 		httpError(w, err, http.StatusInternalServerError, resp)
 		return
 	}
 
-	if len(i) == 0 {
+	if len(data) == 0 {
 		httpError(w, errors.New("no image info found"), http.StatusNotFound, resp)
 		return
 	}
 
 	resp.Result = "success"
 	resp.Message = "Image info is displayed in data field."
-	// Image function returns a byte array, so we need to convert it to json.RawMessage
-	resp.Data = json.RawMessage(i)
+	resp.Data = json.RawMessage(data)
 
 	jsonResp, _ := json.MarshalIndent(resp, "", "    ")
 	_, _ = w.Write(jsonResp)

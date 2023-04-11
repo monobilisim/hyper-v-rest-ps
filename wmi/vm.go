@@ -1,78 +1,39 @@
-//go:build windows
-
 package wmi
 
 import (
-	"github.com/StackExchange/wmi"
-	"time"
+	"fmt"
+	"log"
 )
 
-type MSVM_ComputerSystem struct {
-	InstanceID                               string
-	Caption                                  string
-	Description                              string
-	ElementName                              string
-	InstallDate                              time.Time
-	OperationalStatus                        []int16
-	StatusDescriptions                       []string
-	Status                                   string
-	HealthState                              int16
-	CommunicationStatus                      int16
-	DetailedStatus                           int16
-	OperatingStatus                          int16
-	PrimaryStatus                            int16
-	EnabledState                             int16
-	OtherEnabledState                        string
-	RequestedState                           int16
-	EnabledDefault                           int16
-	TimeOfLastStateChange                    time.Time
-	AvailableRequestedStates                 []int16
-	TransitioningToState                     int16
-	CreationClassName                        string
-	Name                                     string
-	PrimaryOwnerName                         string
-	PrimaryOwnerContact                      string
-	Roles                                    []string
-	NameFormat                               string
-	OtherIdentifyingInfo                     []string
-	IdentifyingDescriptions                  []string
-	Dedicated                                []int16
-	OtherDedicatedDescriptions               []string
-	ResetCapability                          int16
-	PowerManagementCapabilities              []int16
-	OnTimeInMilliseconds                     int64
-	ProcessID                                int32
-	TimeOfLastConfigurationChange            time.Time
-	NumberOfNumaNodes                        int16
-	ReplicationState                         int16
-	ReplicationHealth                        int16
-	ReplicationMode                          int16
-	FailedOverReplicationType                int16
-	LastReplicationType                      int16
-	LastApplicationConsistentReplicationTime time.Time
-	LastReplicationTime                      time.Time
-	LastSuccessfulBackupTime                 time.Time
-	EnhancedSessionModeState                 int16
+// VMs retrieves information about all virtual machines managed by the hypervisor.
+//
+// Returns:
+// A JSON-encoded byte slice containing information about all virtual machines.
+// Any errors encountered during execution are returned as an error.
+func VMs() ([]byte, error) {
+	ps := `Get-VM | ConvertTo-Json`
+	output, err := execPS(ps)
+	if err != nil {
+		log.Printf("Failed to retrieve VMs: %v", err)
+		return nil, fmt.Errorf("failed to retrieve VMs: %v", err)
+	}
+	return output, nil
 }
 
-func VM(name string) ([]MSVM_ComputerSystem, error) {
-	var v []MSVM_ComputerSystem
-	q := wmi.CreateQuery(&v, "WHERE Caption='Virtual Machine' AND Name='"+name+"'")
-	err := wmi.QueryNamespace(q, &v, `root\virtualization\v2`)
+// VM retrieves information about a specific virtual machine identified by the given VMId.
+//
+// Parameters:
+// VMId - The unique identifier of the virtual machine.
+//
+// Returns:
+// A JSON-encoded byte slice containing information about the virtual machine.
+// Any errors encountered during execution are returned as an error.
+func VM(VMId string) ([]byte, error) {
+	ps := `Get-VM -Id ` + VMId + ` | ConvertTo-Json`
+	output, err := execPS(ps)
 	if err != nil {
-		return v, err
+		log.Printf("Failed to retrieve VM: %v", err)
+		return nil, fmt.Errorf("failed to retrieve VM: %v", err)
 	}
-
-	return v, err
-}
-
-func VMs() ([]MSVM_ComputerSystem, error) {
-	var v []MSVM_ComputerSystem
-	q := wmi.CreateQuery(&v, "WHERE Caption='Virtual Machine'")
-	err := wmi.QueryNamespace(q, &v, `root\virtualization\v2`)
-	if err != nil {
-		return nil, err
-	}
-
-	return v, err
+	return output, nil
 }

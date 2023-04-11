@@ -4,9 +4,11 @@ package conf
 
 import (
 	"flag"
-	"github.com/spf13/viper"
 	"log"
 	"os"
+	"path/filepath"
+
+	"github.com/spf13/viper"
 )
 
 type Params struct {
@@ -14,13 +16,30 @@ type Params struct {
 }
 
 func NewParams() (p *Params) {
-	filePath := flag.String("config", os.Getenv("PROGRAMFILES") + "\\wmi-rest\\config.yml", "Path of the configuration file in YAML format")
-	flag.Parse()
+	ex, err := os.Executable()
+	if err != nil {
+		log.Fatalf("Error getting executable path, %s", err)
+	}
+	executablePath := filepath.Dir(ex)
+
+	filePath := flag.String("config", executablePath+"\\config.yml", "Path of the configuration file in YAML format")
 
 	if _, err := os.Stat(*filePath); os.IsNotExist(err) {
-		log.Fatalf("Configuration file: %s does not exist, %v\n", *filePath, err)
+		f, err := os.Create(*filePath)
+		if err != nil {
+			log.Fatalf("Error creating config file, %s", err)
+		}
+		defer f.Close()
+
+		_, err = f.WriteString("port: 8080")
+		if err != nil {
+			log.Fatalf("Error writing config file, %s", err)
+		}
+
+		log.Println("Default config file created in: " + *filePath)
 	}
 
+	flag.Parse()
 	viper.SetConfigFile(*filePath)
 	viper.SetConfigType("yaml")
 
@@ -28,7 +47,7 @@ func NewParams() (p *Params) {
 		log.Fatalf("Error reading config file, %s", err)
 	}
 
-	err := viper.Unmarshal(&p)
+	err = viper.Unmarshal(&p)
 	if err != nil {
 		log.Fatalf("Unable to decode into struct, %v\n", err)
 	}
