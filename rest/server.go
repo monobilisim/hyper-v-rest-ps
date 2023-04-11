@@ -31,6 +31,7 @@ func (s *Server) Run() {
 	r.HandleFunc("/vms", vms)
 	r.HandleFunc("/vms/{name}", vm)
 	r.HandleFunc("/vms/{name}/vhd", vhd)
+	r.HandleFunc("/version", version)
 
 	err := http.ListenAndServe(":"+strconv.Itoa(s.port), r)
 	if err != nil {

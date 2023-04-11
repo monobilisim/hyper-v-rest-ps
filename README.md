@@ -13,3 +13,4 @@
 - VM'leri görüntüleme: `/vms`
 - Tek bir VM'i görüntüleme: `/vms/<VM adı>`
 - VM'in storage bilgisini görüntüleme `/vms/<VM adı>/vhd`
+- Wmi-rest versiyonunu görüntüleme: `/version`

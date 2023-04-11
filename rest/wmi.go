@@ -96,3 +96,16 @@ func vhd(w http.ResponseWriter, req *http.Request) {
 	jsonResp, _ := json.MarshalIndent(resp, "", "    ")
 	_, _ = w.Write(jsonResp)
 }
+
+func version(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	var resp response
+
+	resp.Result = "success"
+	resp.Message = "Version is displayed in data field."
+	resp.Data = "0.3.1"
+
+	jsonResp, _ := json.MarshalIndent(resp, "", "    ")
+	_, _ = w.Write(jsonResp)
+}
