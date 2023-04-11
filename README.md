@@ -2,7 +2,6 @@
 
 - `%PROGRAMFILES%\wmi-rest` klasörü oluşturulur.
 - `wmi-rest.exe` dosyası, `%PROGRAMFILES%\wmi-rest` klasörüne kopyalanır.
-- `config.yml` `%PROGRAMFILES%\wmi-rest` klasörüne kaydedilir. (Bkz. [config.yml](conf/config.yml))
 - Windows PowerShell, yönetici olarak açılır ve aşağıdaki komutlar çalıştırılır:
 
        PS C:\WINDOWS\system32> cd "$env:PROGRAMFILES\wmi-rest"
