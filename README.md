@@ -10,7 +10,8 @@
 
 ## Kullanım
 
-- VM'leri görüntüleme: `/vms`
-- Tek bir VM'i görüntüleme: `/vms/<VM adı>`
-- VM'in storage bilgisini görüntüleme `/vms/<VM adı>/vhd`
-- Wmi-rest versiyonunu görüntüleme: `/version`
+- Tüm VM'ler: `/vms`
+- CPU ve GuestOS: `/vms/<VM>/processor`
+- Memory: `/vms/<VM>/memory`
+- Disk bilgisini `/vms/<VM>/vhd`
+- Versiyon: `/version`
