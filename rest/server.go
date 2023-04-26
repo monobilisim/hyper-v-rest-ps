@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-
 	"github.com/gorilla/mux"
 )
 
@@ -29,7 +28,8 @@ func (s *Server) Run() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/vms", vms)
-	r.HandleFunc("/vms/{name}", vm)
+	r.HandleFunc("/vms/{name}/memory", memory)
+	r.HandleFunc("/vms/{name}/processor", processor)
 	r.HandleFunc("/vms/{name}/vhd", vhd)
 	r.HandleFunc("/version", version)
 
