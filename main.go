@@ -1,13 +1,15 @@
-//go:build windows
-
 package main
 
 import (
 	"flag"
 	"log"
 	"os"
-	"wmi-rest/conf"
+
+	// "log"
+	// "os"
+
 	"wmi-rest/rest"
+	"wmi-rest/utilities"
 
 	"github.com/kardianos/service"
 )
@@ -32,9 +34,8 @@ func (p *program) Start(s service.Service) error {
 }
 
 func (p *program) run() {
-	c := conf.NewParams()
-	s := rest.NewServer(c.Port)
-	s.Run()
+	c := utilities.ParseConfig()
+	rest.StartServer(c.Port, "1.2.0")
 }
 
 func (p *program) Stop(s service.Service) error {
