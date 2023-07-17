@@ -9,11 +9,17 @@ type response struct {
 }
 
 func returnResponse(respData interface{}, status int, result, message string) (code int, contentType string, data []byte) {
+
+	value, ok := respData.(string)
+	if ok {
+		respData, _ = json.Marshal(value)
+	}
 	resp := response{
 		Result:  result,
 		Message: message,
-		Data:    respData,
+		Data:    json.RawMessage(respData.([]byte)),
 	}
 	jsonResp, _ := json.MarshalIndent(resp, "", "    ")
+	println(status, "application/json", jsonResp)
 	return status, "application/json", jsonResp
 }

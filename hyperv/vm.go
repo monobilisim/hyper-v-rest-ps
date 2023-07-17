@@ -12,8 +12,14 @@ func VMS(c *gin.Context) {
 	output, err := utilities.CommandLine(cmdline)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.Data(returnResponse(err.Error(), http.StatusInternalServerError, "failure", "error"))
+		return
 	}
 
-	c.Data(http.StatusOK, "application/json", output)
+	if len(output) == 0 {
+		c.Data(returnResponse("No VM found.", http.StatusInternalServerError, "failure", "error"))
+		return
+	}
+
+	c.Data(returnResponse(output, http.StatusOK, "success", "VMs displayed in data field"))
 }
