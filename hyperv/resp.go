@@ -20,6 +20,5 @@ func returnResponse(respData interface{}, status int, result, message string) (c
 		Data:    json.RawMessage(respData.([]byte)),
 	}
 	jsonResp, _ := json.MarshalIndent(resp, "", "    ")
-	println(status, "application/json", jsonResp)
 	return status, "application/json", jsonResp
 }
