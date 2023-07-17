@@ -9,8 +9,6 @@ import (
 )
 
 func StartServer(port int, version string) {
-	//gin.SetMode(gin.ReleaseMode)
-	//r := gin.New()
 	r := gin.Default()
 	r.GET("/vms", hyperv.VMS)
 	r.GET("/vms/:machid/memory", hyperv.Memory)

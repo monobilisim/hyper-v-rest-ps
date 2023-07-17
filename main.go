@@ -5,9 +5,6 @@ import (
 	"log"
 	"os"
 
-	// "log"
-	// "os"
-
 	"wmi-rest/rest"
 	"wmi-rest/utilities"
 
