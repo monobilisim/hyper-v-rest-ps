@@ -2,7 +2,6 @@ package utilities
 
 import (
 	"container/list"
-	"errors"
 	"time"
 
 	"github.com/bhendo/go-powershell"
@@ -27,28 +26,29 @@ func addShellInstance() {
 }
 
 func CommandLine(command string) ([]byte, error) {
-	result := make(chan []byte, 1)
-	errChan := make(chan error, 1)
+	if shellQueue == nil || shellQueue.Len() < 3 {
+		go addShellInstance()
+	}
+
+	errChan := make(chan error)
+	result := make(chan []byte)
 
 	go func() {
 		var output string
-		var err error
 
 		shell, ok := selectedShell.(powershell.Shell)
-		if !ok {
-			errChan <- errors.New("invalid shell instance")
-			return
+		if ok {
+			var err error
+			output, _, err = shell.Execute(command)
+			if err != nil {
+				errChan <- err
+				return
+			}
 		}
 
-		output, _, err = shell.Execute(command)
-		if err != nil {
-			errChan <- err
-			return
-		}
-
-		if shellQueue.Len() < 4 {
-			addShellInstance()
-			addShellInstance()
+		if shellQueue.Len() > 0 {
+			shellQueue.MoveToBack(shellQueue.Front())
+			selectedShell = shellQueue.Front().Value
 		}
 
 		result <- []byte(output)
