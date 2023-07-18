@@ -3,6 +3,7 @@ package rest
 import (
 	"net/http"
 	"strconv"
+	"time"
 	"wmi-rest/hyperv"
 
 	"github.com/gin-gonic/gin"
@@ -25,5 +26,14 @@ func StartServer(port int, version string) {
 			"Data":    version,
 		})
 	})
-	r.Run(":" + strconv.Itoa(port))
+
+	srv := &http.Server{
+		Addr:         ":" + strconv.Itoa(port),
+		Handler:      r,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+	}
+
+	srv.ListenAndServe()
+
 }
