@@ -1,22 +1,29 @@
 package utilities
 
 import (
+	"container/list"
+	"errors"
 	"time"
 
 	"github.com/bhendo/go-powershell"
 	"github.com/bhendo/go-powershell/backend"
 )
 
-var shell powershell.Shell
-var backupShell powershell.Shell
-var selectedShell int
+var shellQueue *list.List
+var selectedShell interface{}
 
 func InitPwsh() {
-	var err error
-	shell, err = powershell.New(&backend.Local{})
+	shellQueue = list.New()
+	addShellInstance()
+}
+
+func addShellInstance() {
+	shell, err := powershell.New(&backend.Local{})
 	if err != nil {
 		panic(err)
 	}
+	shellQueue.PushBack(shell)
+	selectedShell = shellQueue.Front().Value
 }
 
 func CommandLine(command string) ([]byte, error) {
@@ -26,29 +33,44 @@ func CommandLine(command string) ([]byte, error) {
 	go func() {
 		var output string
 		var err error
-		if selectedShell == 0 {
-			output, _, err = shell.Execute(command)
-		} else {
-			output, _, err = backupShell.Execute(command)
+
+		shell, ok := selectedShell.(powershell.Shell)
+		if !ok {
+			errChan <- errors.New("invalid shell instance")
+			return
 		}
 
+		output, _, err = shell.Execute(command)
 		if err != nil {
 			errChan <- err
 			return
 		}
+
+		if shellQueue.Len() < 4 {
+			addShellInstance()
+			addShellInstance()
+		}
+
 		result <- []byte(output)
 	}()
 
 	select {
 	case <-time.After(2 * time.Second):
-		if selectedShell == 0 {
-			shell.Exit()
-			InitPwsh()
-			selectedShell = 1
-		} else {
-			backupShell.Exit()
-			backupShell, _ = powershell.New(&backend.Local{})
+		shell, ok := selectedShell.(powershell.Shell)
+		if ok {
+			go shell.Exit()
 		}
+
+		if shellQueue != nil && shellQueue.Front() != nil {
+			shellQueue.Remove(shellQueue.Front())
+		}
+
+		if shellQueue.Len() > 0 {
+			selectedShell = shellQueue.Front().Value
+		} else {
+			go addShellInstance()
+		}
+
 		return CommandLine(command)
 	case err := <-errChan:
 		return nil, err
