@@ -22,7 +22,7 @@ func VHD(c *gin.Context) {
 	}
 
 	if len(output) < 1 {
-		c.Data(returnResponse("No Disk found.", http.StatusInternalServerError, "failure", "error"))
+		c.Data(returnResponse("No Disk found.", http.StatusOK, "failure", "error"))
 		return
 	}
 

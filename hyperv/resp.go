@@ -8,10 +8,8 @@ type response struct {
 	Data    interface{} `json:"data"`
 }
 
-func returnResponse(respData interface{}, status int, result, message string) (code int, contentType string, data []byte) {
-
-	value, ok := respData.(string)
-	if ok {
+func returnResponse(respData interface{}, status int, result, message string) (int, string, []byte) {
+	if value, ok := respData.(string); ok {
 		respData, _ = json.Marshal(value)
 	}
 	resp := response{

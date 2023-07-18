@@ -17,7 +17,7 @@ func VMS(c *gin.Context) {
 	}
 
 	if len(output) == 0 {
-		c.Data(returnResponse("No VM found.", http.StatusInternalServerError, "failure", "error"))
+		c.Data(returnResponse("No VM found.", http.StatusOK, "failure", "error"))
 		return
 	}
 

@@ -21,7 +21,7 @@ func StartServer(port int, version string) {
 	r.GET("/version", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{
 			"Result":  "success",
-			"Message": "uygulama sürümü",
+			"Message": "Application version",
 			"Data":    version,
 		})
 	})
