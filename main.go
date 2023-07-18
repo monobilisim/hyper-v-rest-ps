@@ -1,13 +1,12 @@
-//go:build windows
-
 package main
 
 import (
 	"flag"
 	"log"
 	"os"
-	"wmi-rest/conf"
+
 	"wmi-rest/rest"
+	"wmi-rest/utilities"
 
 	"github.com/kardianos/service"
 )
@@ -32,9 +31,8 @@ func (p *program) Start(s service.Service) error {
 }
 
 func (p *program) run() {
-	c := conf.NewParams()
-	s := rest.NewServer(c.Port)
-	s.Run()
+	c := utilities.ParseConfig()
+	rest.StartServer(c.Port, "1.2.0")
 }
 
 func (p *program) Stop(s service.Service) error {
@@ -50,6 +48,8 @@ func (p *program) Stop(s service.Service) error {
 func main() {
 	svcFlag := flag.String("service", "", "Control the system service.")
 	flag.Parse()
+
+	utilities.InitPwsh()
 
 	options := make(service.KeyValue)
 	options["Restart"] = "on-success"
