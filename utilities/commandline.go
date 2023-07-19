@@ -34,7 +34,6 @@ func CommandLine(command string) ([]byte, error) {
 
 		result <- []byte(output)
 	}()
-
 	rotateShell()
 	select {
 	case <-time.After(2 * time.Second):
