@@ -15,6 +15,17 @@ func Memory(c *gin.Context) {
 		return
 	}
 
+	if input == "all" {
+		// Get-WmiObject -Namespace 'root\virtualization\v2' -Class Msvm_MemorySettingData | ConvertTo-Json
+		output, err := utilities.CommandLine(`Get-WmiObject -Namespace 'root\virtualization\v2' -Class Msvm_MemorySettingData -Filter "Caption like 'Memory'" | Select-Object -Property VirtualQuantity,InstanceID | ConvertTo-Json`)
+		if err != nil {
+			c.Data(returnResponse(err.Error(), http.StatusInternalServerError, "failure", "error"))
+			return
+		}
+		c.Data(returnResponse(output, http.StatusOK, "success", "Memory info is displayed in data field"))
+		return
+	}
+
 	output, err := utilities.CommandLine(`Get-VM -Id ` + input + ` | Get-VMMemory | ConvertTo-Json`)
 	if err != nil {
 		c.Data(returnResponse(err.Error(), http.StatusInternalServerError, "failure", "error"))

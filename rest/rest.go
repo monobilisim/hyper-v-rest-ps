@@ -31,7 +31,7 @@ func StartServer(port int, version string) {
 		Addr:         ":" + strconv.Itoa(port),
 		Handler:      r,
 		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
+		WriteTimeout: 300 * time.Second,
 	}
 
 	srv.ListenAndServe()

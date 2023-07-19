@@ -14,6 +14,7 @@ var selectedShell interface{}
 func CommandLine(command string) ([]byte, error) {
 	if shellQueue == nil || shellQueue.Len() < 4 {
 		go addShellInstance()
+		go addShellInstance()
 	}
 
 	errChan := make(chan error)
@@ -36,10 +37,10 @@ func CommandLine(command string) ([]byte, error) {
 	}()
 	rotateShell()
 	select {
-	case <-time.After(2 * time.Second):
+	case <-time.After(20 * time.Second):
 		shell, ok := selectedShell.(powershell.Shell)
 		if ok {
-			go shell.Exit()
+			shell.Exit()
 		}
 
 		if shellQueue != nil && shellQueue.Front() != nil {
@@ -48,9 +49,9 @@ func CommandLine(command string) ([]byte, error) {
 
 		if shellQueue.Len() > 0 {
 			selectedShell = shellQueue.Front().Value
-		} else {
-			go addShellInstance()
 		}
+
+		rotateShell()
 
 		return CommandLine(command)
 	case err := <-errChan:
@@ -73,10 +74,12 @@ func rotateShell() {
 }
 
 func addShellInstance() {
-	shell, err := powershell.New(&backend.Local{})
-	if err != nil {
-		panic(err)
+	if shellQueue.Len() < 4 {
+		shell, err := powershell.New(&backend.Local{})
+		if err != nil {
+			panic(err)
+		}
+		shellQueue.PushBack(shell)
+		selectedShell = shellQueue.Front().Value
 	}
-	shellQueue.PushBack(shell)
-	selectedShell = shellQueue.Front().Value
 }
