@@ -11,22 +11,8 @@ import (
 var shellQueue *list.List
 var selectedShell interface{}
 
-func InitPwsh() {
-	shellQueue = list.New()
-	addShellInstance()
-}
-
-func addShellInstance() {
-	shell, err := powershell.New(&backend.Local{})
-	if err != nil {
-		panic(err)
-	}
-	shellQueue.PushBack(shell)
-	selectedShell = shellQueue.Front().Value
-}
-
 func CommandLine(command string) ([]byte, error) {
-	if shellQueue == nil || shellQueue.Len() < 3 {
+	if shellQueue == nil || shellQueue.Len() < 4 {
 		go addShellInstance()
 	}
 
@@ -46,14 +32,10 @@ func CommandLine(command string) ([]byte, error) {
 			}
 		}
 
-		if shellQueue.Len() > 0 {
-			shellQueue.MoveToBack(shellQueue.Front())
-			selectedShell = shellQueue.Front().Value
-		}
-
 		result <- []byte(output)
 	}()
 
+	rotateShell()
 	select {
 	case <-time.After(2 * time.Second):
 		shell, ok := selectedShell.(powershell.Shell)
@@ -77,4 +59,25 @@ func CommandLine(command string) ([]byte, error) {
 	case res := <-result:
 		return res, nil
 	}
+}
+
+func InitPwsh() {
+	shellQueue = list.New()
+	addShellInstance()
+}
+
+func rotateShell() {
+	if shellQueue.Len() > 1 {
+		shellQueue.MoveToBack(shellQueue.Front())
+		selectedShell = shellQueue.Front().Value
+	}
+}
+
+func addShellInstance() {
+	shell, err := powershell.New(&backend.Local{})
+	if err != nil {
+		panic(err)
+	}
+	shellQueue.PushBack(shell)
+	selectedShell = shellQueue.Front().Value
 }
