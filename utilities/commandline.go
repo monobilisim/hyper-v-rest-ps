@@ -2,6 +2,7 @@ package utilities
 
 import (
 	"container/list"
+	"sync"
 	"time"
 
 	"github.com/bhendo/go-powershell"
@@ -10,6 +11,7 @@ import (
 
 var shellQueue *list.List
 var selectedShell interface{}
+var selectedShellLock sync.Mutex
 
 func CommandLine(command string) ([]byte, error) {
 	if shellQueue == nil || shellQueue.Len() < 4 {
@@ -23,6 +25,7 @@ func CommandLine(command string) ([]byte, error) {
 	go func() {
 		var output string
 
+		selectedShellLock.Lock()
 		shell, ok := selectedShell.(powershell.Shell)
 		if ok {
 			var err error
@@ -32,12 +35,14 @@ func CommandLine(command string) ([]byte, error) {
 				return
 			}
 		}
+		selectedShellLock.Unlock()
 
 		result <- []byte(output)
 	}()
 	rotateShell()
 	select {
 	case <-time.After(20 * time.Second):
+		selectedShellLock.Lock()
 		shell, ok := selectedShell.(powershell.Shell)
 		if ok {
 			shell.Exit()
@@ -50,6 +55,7 @@ func CommandLine(command string) ([]byte, error) {
 		if shellQueue.Len() > 0 {
 			selectedShell = shellQueue.Front().Value
 		}
+		selectedShellLock.Unlock()
 
 		rotateShell()
 
@@ -69,7 +75,9 @@ func InitPwsh() {
 func rotateShell() {
 	if shellQueue.Len() > 1 {
 		shellQueue.MoveToBack(shellQueue.Front())
+		selectedShellLock.Lock()
 		selectedShell = shellQueue.Front().Value
+		selectedShellLock.Unlock()
 	}
 }
 
@@ -80,6 +88,8 @@ func addShellInstance() {
 			panic(err)
 		}
 		shellQueue.PushBack(shell)
+		selectedShellLock.Lock()
 		selectedShell = shellQueue.Front().Value
+		selectedShellLock.Unlock()
 	}
 }

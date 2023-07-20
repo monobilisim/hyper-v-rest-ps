@@ -22,6 +22,7 @@ func Processor(c *gin.Context) {
 			return
 		}
 		c.Data(returnResponse(output, http.StatusOK, "success", "Processor info is displayed in data field."))
+		return
 	}
 
 	output, err := utilities.CommandLine(`Get-VM -Id ` + input + ` | Get-VMProcessor | ConvertTo-Json`)

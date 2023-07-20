@@ -15,6 +15,16 @@ func VHD(c *gin.Context) {
 		return
 	}
 
+	if input == "all" {
+		output, err := utilities.CommandLine(`Get-VHD | ConvertTo-Json`)
+		if err != nil {
+			c.Data(returnResponse(err.Error(), http.StatusInternalServerError, "failure", "error"))
+			return
+		}
+		c.Data(returnResponse(output, http.StatusOK, "success", "VHD info is displayed in data field."))
+		return
+	}
+
 	output, err := utilities.CommandLine(`Get-VHD -Id ` + input + ` | ConvertTo-Json`)
 	if err != nil {
 		c.Data(returnResponse(err.Error(), http.StatusInternalServerError, "failure", "error"))
