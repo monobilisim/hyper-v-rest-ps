@@ -15,14 +15,14 @@ func Network(c *gin.Context) {
 		return
 	}
 	if input == "all" {
-		output, err := utilities.CommandLine(`Get-WmiObject -namespace 'root\virtualization\v2' -class Msvm_GuestNetworkAdapterConfiguration | ConvertTo-Json`)
+		output, err := utilities.CommandLine(`Get-WmiObject -namespace 'root\virtualization\v2' -class Msvm_GuestNetworkAdapterConfiguration | Select-Object -Property InstanceID, IPAddresses | ConvertTo-Json`)
 		if err != nil {
 			c.Data(returnResponse(err.Error(), http.StatusInternalServerError, "failure", "error"))
 		}
 		c.Data(returnResponse(output, http.StatusOK, "success", "Network info is displayed in data field"))
 		return
 	}
-	output, err := utilities.CommandLine(`Get-WmiObject -namespace 'root\virtualization\v2' -class Msvm_GuestNetworkAdapterConfiguration -filter "InstanceID like '%` + input + `%'" | ConvertTo-Json`)
+	output, err := utilities.CommandLine(`Get-WmiObject -namespace 'root\virtualization\v2' -class Msvm_GuestNetworkAdapterConfiguration -filter "InstanceID like '%` + input + `%'"  | Select-Object -Property InstanceID, IPAddresses | ConvertTo-Json`)
 
 	if err != nil {
 		c.Data(returnResponse(err.Error(), http.StatusInternalServerError, "failure", "error"))

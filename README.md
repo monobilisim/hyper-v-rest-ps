@@ -10,8 +10,11 @@
 
 ## Kullanım
 
-- Tüm VM'ler: `/vms`
-- CPU ve GuestOS: `/vms/<VM>/processor`
-- Memory: `/vms/<VM>/memory`
-- Disk bilgisini `/vms/<VM>/vhd`
+- Tüm sanal makineler: `/vms`
+- CPU bilgisi: `/vms/<VM-ID>/processor`
+- Tüm sanal makinelerin CPU bilgisi: `/vms/all/processor`
+- RAM bilgisi: `/vms/<VM-ID>/memory`
+- Tüm sanal makinelerşn RAM bilgisi: `/vms/all/memory`
+- Disk bilgisi: `/vms/<VM-ID>/vhd`
+- Tüm sanal makinelerin disk bilgisi: `/vms/all/vhd`
 - Versiyon: `/version`

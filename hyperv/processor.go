@@ -16,7 +16,7 @@ func Processor(c *gin.Context) {
 	}
 
 	if input == "all" {
-		output, err := utilities.CommandLine(`Get-WmiObject -Namespace 'root\virtualization\v2' -Class Msvm_SummaryInformation | ConvertTo-Json`)
+		output, err := utilities.CommandLine(`Get-WmiObject -namespace 'root\virtualization\v2' -class Msvm_SummaryInformation | Select-Object -Property ElementName, InstanceID, NumberOfProcessors | ConvertTo-Json `)
 		if err != nil {
 			c.Data(returnResponse(err.Error(), http.StatusInternalServerError, "failure", "error"))
 			return

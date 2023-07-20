@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"wmi-rest/hyperv"
 	"wmi-rest/rest"
 	"wmi-rest/utilities"
 
@@ -50,6 +51,7 @@ func main() {
 	flag.Parse()
 
 	utilities.InitPwsh()
+	go hyperv.Initialize()
 
 	options := make(service.KeyValue)
 	options["Restart"] = "on-success"

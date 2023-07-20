@@ -22,10 +22,10 @@ func CommandLine(command string) ([]byte, error) {
 	errChan := make(chan error)
 	result := make(chan []byte)
 
+	rotateShell()
 	go func() {
 		var output string
 
-		selectedShellLock.Lock()
 		shell, ok := selectedShell.(powershell.Shell)
 		if ok {
 			var err error
@@ -35,11 +35,10 @@ func CommandLine(command string) ([]byte, error) {
 				return
 			}
 		}
-		selectedShellLock.Unlock()
 
 		result <- []byte(output)
 	}()
-	rotateShell()
+
 	select {
 	case <-time.After(20 * time.Second):
 		selectedShellLock.Lock()
@@ -48,8 +47,14 @@ func CommandLine(command string) ([]byte, error) {
 			shell.Exit()
 		}
 
-		if shellQueue != nil && shellQueue.Front() != nil {
-			shellQueue.Remove(shellQueue.Front())
+		if shellQueue != nil && shell != nil {
+			// Remove the shell from the queue
+			for e := shellQueue.Front(); e != nil; e = e.Next() {
+				if e.Value == shell {
+					shellQueue.Remove(e)
+					break
+				}
+			}
 		}
 
 		if shellQueue.Len() > 0 {
