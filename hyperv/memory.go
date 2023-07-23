@@ -25,7 +25,7 @@ func Memory(c *gin.Context) {
 		return
 	}
 
-	output, err := utilities.CommandLine(`Get-VM -Id ` + input + ` | Get-VMMemory | Select-Object -Property InstanceID, VirtualQuantity | ConvertTo-Json`)
+	output, err := utilities.CommandLine(`Get-VM -Id ` + input + ` | Get-VMMemory | Select-Object -Property VMId, Startup | ConvertTo-Json`)
 	if err != nil {
 		c.Data(returnResponse(err.Error(), http.StatusInternalServerError, "failure", "error"))
 		return

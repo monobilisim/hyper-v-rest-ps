@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 	"os"
+	"time"
 
 	"wmi-rest/hyperv"
 	"wmi-rest/rest"
@@ -50,8 +51,16 @@ func main() {
 	svcFlag := flag.String("service", "", "Control the system service.")
 	flag.Parse()
 
-	utilities.InitPwsh()
-	go hyperv.Initialize()
+	utilities.Init()
+	hyperv.Init()
+
+	go func() {
+		for {
+			hyperv.Refresh()
+			logger.Info("Hyper-V module reinitialized.")
+			time.Sleep(600 * time.Second)
+		}
+	}()
 
 	options := make(service.KeyValue)
 	options["Restart"] = "on-success"
