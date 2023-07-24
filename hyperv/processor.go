@@ -25,7 +25,18 @@ func Processor(c *gin.Context) {
 		return
 	}
 
+	if !utilities.IsValidUUID(input) {
+		c.Data(returnResponse("Invalid VM ID specified", http.StatusBadRequest, "failure", "error"))
+		return
+	}
+
 	output, err := utilities.CommandLine(`Get-VM -Id ` + input + ` | Get-VMProcessor | ConvertTo-Json`)
+
+	if string(output) == "" {
+		c.Data(returnResponse("VM Not Found", http.StatusNotFound, "failure", "error"))
+		return
+	}
+
 	if err != nil {
 		c.Data(returnResponse(err.Error(), http.StatusInternalServerError, "failure", "error"))
 		return

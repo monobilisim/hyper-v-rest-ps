@@ -19,6 +19,13 @@ func StartServer(port int, version string) {
 	r.GET("/vms/:machid/processor", hyperv.Processor)
 	r.GET("/vms/:machid/vhd", hyperv.VHD)
 
+	r.NoRoute(func(c *gin.Context) {
+		c.JSON(http.StatusNotFound, gin.H{
+			"Result":  "failure",
+			"Message": "Wrong Path",
+		})
+	})
+
 	r.GET("/version", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{
 			"Result":  "success",

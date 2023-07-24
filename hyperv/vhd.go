@@ -43,7 +43,11 @@ func VHD(c *gin.Context) {
 		return
 	}
 
-	output := getVHDInfo(input, c)
+	output, err := getVHDInfo(input, c)
+	if err != nil {
+		c.Data(returnResponse("Invalid VM ID Specified", http.StatusNotFound, "failure", "error"))
+		return
+	}
 
 	if len(output) < 1 {
 		c.Data(returnResponse("No Disk found.", http.StatusOK, "failure", "error"))
@@ -60,7 +64,7 @@ func getAllVHDInfo(c *gin.Context) {
 	pathListLock.Lock()
 	sizeList = make([]VHDInfo, len(VHDPathList))
 	for i, v := range VHDPathList {
-		output, err = utilities.CommandLine(`Get-VHD -Path '` + v.Path + `' | Select-Object -Property Size | ConvertTo-Json`)
+		output, err = utilities.CommandLine(`Get-VHD -Path '` + v.Path + `' | Select-Object -Property Path, Size | ConvertTo-Json`)
 		if err != nil {
 			c.Data(returnResponse(err.Error(), http.StatusInternalServerError, "failure", "error"))
 			return
@@ -80,13 +84,12 @@ func getAllVHDInfo(c *gin.Context) {
 	c.Data(returnResponse(jsonOutput, http.StatusOK, "success", "VHD info is displayed in data field."))
 }
 
-func getVHDInfo(input string, c *gin.Context) []byte {
+func getVHDInfo(input string, c *gin.Context) ([]byte, error) {
 	output, err := utilities.CommandLine(`Get-VHD -Id ` + input + ` | ConvertTo-Json`)
 	if err != nil {
-		c.Data(returnResponse(err.Error(), http.StatusInternalServerError, "failure", "error"))
-		return nil
+		return nil, err
 	}
-	return output
+	return output, nil
 }
 
 func UnmarshalVHDPath(data []byte) (VHDPath, error) {

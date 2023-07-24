@@ -25,7 +25,18 @@ func Memory(c *gin.Context) {
 		return
 	}
 
-	output, err := utilities.CommandLine(`Get-VM -Id ` + input + ` | Get-VMMemory | Select-Object -Property VMId, Startup | ConvertTo-Json`)
+	if !utilities.IsValidUUID(input) {
+		c.Data(returnResponse("Invalid VM ID specified", http.StatusBadRequest, "failure", "error"))
+		return
+	}
+
+	output, err := utilities.CommandLine(`Get-VM -Id ` + input + ` | Get-VMMemory | Select-Object -Property Startup | ConvertTo-Json`)
+
+	if string(output) == "" {
+		c.Data(returnResponse("VM Not Found", http.StatusNotFound, "failure", "error"))
+		return
+	}
+
 	if err != nil {
 		c.Data(returnResponse(err.Error(), http.StatusInternalServerError, "failure", "error"))
 		return

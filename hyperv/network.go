@@ -22,7 +22,16 @@ func Network(c *gin.Context) {
 		c.Data(returnResponse(output, http.StatusOK, "success", "Network info is displayed in data field"))
 		return
 	}
-	output, err := utilities.CommandLine(`Get-WmiObject -namespace 'root\virtualization\v2' -class Msvm_GuestNetworkAdapterConfiguration -filter "InstanceID like '%` + input + `%'"  | Select-Object -Property InstanceID, IPAddresses | ConvertTo-Json`)
+	if !utilities.IsValidUUID(input) {
+		c.Data(returnResponse("Invalid VM ID specified", http.StatusBadRequest, "failure", "error"))
+		return
+	}
+	output, err := utilities.CommandLine(`Get-WmiObject -namespace 'root\virtualization\v2' -class Msvm_GuestNetworkAdapterConfiguration -filter "InstanceID like '%` + input + `%'"  | Select-Object -Property IPAddresses | ConvertTo-Json`)
+
+	if string(output) == "" {
+		c.Data(returnResponse("VM Not Found", http.StatusNotFound, "failure", "error"))
+		return
+	}
 
 	if err != nil {
 		c.Data(returnResponse(err.Error(), http.StatusInternalServerError, "failure", "error"))

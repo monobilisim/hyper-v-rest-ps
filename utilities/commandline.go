@@ -3,6 +3,8 @@ package utilities
 import (
 	"container/list"
 	"fmt"
+	"sync"
+	"time"
 
 	"github.com/bhendo/go-powershell"
 	"github.com/bhendo/go-powershell/backend"
@@ -16,6 +18,7 @@ type session struct {
 var (
 	shellQueue *list.List
 	taskQueue  chan struct{}
+	wg         *sync.WaitGroup
 )
 
 const maxQueueSize = 5
@@ -23,6 +26,7 @@ const maxQueueSize = 5
 func Init() {
 	shellQueue = list.New()
 	taskQueue = make(chan struct{}, maxQueueSize)
+	wg = &sync.WaitGroup{}
 }
 
 func addSession() {
@@ -61,6 +65,7 @@ func CommandLine(command string) ([]byte, error) {
 	errChan := make(chan error)
 	result := make(chan []byte)
 
+	wg.Wait()
 	<-taskQueue
 
 	for {
@@ -89,6 +94,10 @@ func CommandLine(command string) ([]byte, error) {
 		}(s)
 
 		select {
+		case <-time.After(300 * time.Second):
+			s.busy = false
+			go refreshShellQueue()
+			return nil, fmt.Errorf("timeout")
 		case err := <-errChan:
 			return nil, err
 		case output := <-result:
@@ -96,4 +105,19 @@ func CommandLine(command string) ([]byte, error) {
 		}
 	}
 	return nil, fmt.Errorf("no session available")
+}
+
+func refreshShellQueue() {
+	wg.Add(1)
+	defer wg.Done()
+	for shellQueue.Len() > 0 {
+		e := shellQueue.Front()
+		s := e.Value.(*session)
+		if s.busy {
+			rotateQueue()
+			continue
+		}
+		shellQueue.Remove(e)
+		(*s.shell).Exit()
+	}
 }
