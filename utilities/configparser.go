@@ -2,7 +2,6 @@ package utilities
 
 import (
 	"flag"
-	"log"
 	"os"
 	"path/filepath"
 

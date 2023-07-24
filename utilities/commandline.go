@@ -43,7 +43,7 @@ func addSession() {
 			taskQueue <- struct{}{}
 			return
 		}
-		fmt.Println("No task queue or task queue is full")
+		log.Warn("No task queue or task queue is full")
 	}
 }
 
@@ -71,7 +71,7 @@ func CommandLine(command string) ([]byte, error) {
 
 	for {
 		if shellQueue.Len() == 0 {
-			fmt.Println("No session available, waiting in the queue...")
+			log.Warn("No session available, waiting in the queue...")
 			break
 		}
 

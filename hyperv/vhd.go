@@ -3,8 +3,6 @@ package hyperv
 import (
 	"encoding/gob"
 	"encoding/json"
-	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -13,6 +11,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
+
+var log = utilities.Log
 
 type VHDPath []VHDPathElement
 
@@ -108,32 +108,32 @@ func Refresh() {
 	pathListLock.Lock()
 	err = Load(executablePath+"\\vhdpath.gob", &VHDPathList)
 	if err != nil {
-		fmt.Println("Unable to load VHDPathList from file. Loading from PowerShell.")
+		log.Info("Unable to load VHDPathList from file. Loading from PowerShell.")
 	} else {
-		fmt.Println("Finished loading VHDPathList from disk.")
+		log.Info("Finished loading VHDPathList from disk.")
 	}
 	pathListLock.Unlock()
 
-	fmt.Println("Reinitializing VHDPathList.")
+	log.Info("Reinitializing VHDPathList.")
 	output, err := utilities.CommandLine(`Get-VM | Get-VMHardDiskDrive | Select-Object -Property Path, VMId | ConvertTo-Json`)
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Error(err.Error())
 		return
 	}
 
-	fmt.Println("Waiting for VHDPathList lock.")
+	log.Info("Waiting for VHDPathList lock.")
 	pathListLock.Lock()
 	VHDPathList, err = UnmarshalVHDPath(output)
 	pathListLock.Unlock()
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Error(err.Error())
 		return
 	}
-	fmt.Println("Finished reinitializing VHDPathList.")
+	log.Info("Finished reinitializing VHDPathList.")
 
 	err = Save(executablePath+"\\vhdpath.gob", VHDPathList)
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Error(err.Error())
 		return
 	}
 }
@@ -148,9 +148,9 @@ func Init() {
 	pathListLock.Lock()
 	err = Load(executablePath+"\\vhdpath.gob", &VHDPathList)
 	if err != nil {
-		fmt.Println("Unable to load VHDPathList from file. Loading from PowerShell.")
+		log.Info("Unable to load VHDPathList from file. Loading from PowerShell.")
 	} else {
-		fmt.Println("Finished loading VHDPathList from disk.")
+		log.Info("Finished loading VHDPathList from disk.")
 	}
 	pathListLock.Unlock()
 }

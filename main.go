@@ -52,21 +52,22 @@ func main() {
 	flag.Parse()
 
 	utilities.Init()
+	utilities.SetupLogger()
 	hyperv.Init()
 
 	go func() {
 		for {
+			time.Sleep(660 * time.Second)
 			hyperv.Refresh()
 			logger.Info("Hyper-V module reinitialized.")
-			time.Sleep(660 * time.Second)
 		}
 	}()
 
 	go func() {
 		for {
+			time.Sleep(2700 * time.Second)
 			utilities.RefreshShellQueue()
 			logger.Info("Shell queue reinitialized.")
-			time.Sleep(2700 * time.Second)
 		}
 	}()
 

@@ -6,6 +6,7 @@ require (
 	github.com/bhendo/go-powershell v0.0.0-20190719160123-219e7fb4e41e
 	github.com/gin-gonic/gin v1.9.1
 	github.com/kardianos/service v1.2.2
+	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.16.0
 )
 
