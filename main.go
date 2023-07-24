@@ -34,7 +34,7 @@ func (p *program) Start(s service.Service) error {
 
 func (p *program) run() {
 	c := utilities.ParseConfig()
-	rest.StartServer(c.Port, "1.2.0")
+	rest.StartServer(c.Port, "1.3.0")
 }
 
 func (p *program) Stop(s service.Service) error {
@@ -58,7 +58,15 @@ func main() {
 		for {
 			hyperv.Refresh()
 			logger.Info("Hyper-V module reinitialized.")
-			time.Sleep(600 * time.Second)
+			time.Sleep(660 * time.Second)
+		}
+	}()
+
+	go func() {
+		for {
+			utilities.RefreshShellQueue()
+			logger.Info("Shell queue reinitialized.")
+			time.Sleep(2700 * time.Second)
 		}
 	}()
 

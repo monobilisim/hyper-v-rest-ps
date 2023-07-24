@@ -30,6 +30,7 @@ func Init() {
 }
 
 func addSession() {
+	wg.Wait()
 	if shellQueue.Len() < maxQueueSize {
 		shell, err := powershell.New(&backend.Local{})
 		if err != nil {
@@ -54,6 +55,7 @@ func rotateQueue() {
 }
 
 func CommandLine(command string) ([]byte, error) {
+	wg.Wait()
 	for shellQueue.Len() < maxQueueSize {
 		addSession()
 	}
@@ -65,7 +67,6 @@ func CommandLine(command string) ([]byte, error) {
 	errChan := make(chan error)
 	result := make(chan []byte)
 
-	wg.Wait()
 	<-taskQueue
 
 	for {
@@ -96,7 +97,7 @@ func CommandLine(command string) ([]byte, error) {
 		select {
 		case <-time.After(300 * time.Second):
 			s.busy = false
-			go refreshShellQueue()
+			go RefreshShellQueue()
 			return nil, fmt.Errorf("timeout")
 		case err := <-errChan:
 			return nil, err
@@ -107,7 +108,7 @@ func CommandLine(command string) ([]byte, error) {
 	return nil, fmt.Errorf("no session available")
 }
 
-func refreshShellQueue() {
+func RefreshShellQueue() {
 	wg.Add(1)
 	defer wg.Done()
 	for shellQueue.Len() > 0 {
