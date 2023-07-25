@@ -18,7 +18,7 @@ type session struct {
 var (
 	shellQueue *list.List
 	taskQueue  chan struct{}
-	wg         *sync.WaitGroup
+	Wg         *sync.WaitGroup
 )
 
 const maxQueueSize = 5
@@ -26,44 +26,23 @@ const maxQueueSize = 5
 func Init() {
 	shellQueue = list.New()
 	taskQueue = make(chan struct{}, maxQueueSize)
-	wg = &sync.WaitGroup{}
-}
-
-func addSession() {
-	wg.Wait()
-	if shellQueue.Len() < maxQueueSize {
-		shell, err := powershell.New(&backend.Local{})
-		if err != nil {
-			panic(err)
-		}
-		newSession := &session{shell: &shell, busy: false}
-		shellQueue.PushBack(newSession)
-		// If there are sessions in the queue and taskQueue is not full, release a slot for the next task
-		if taskQueue != nil && len(taskQueue) < cap(taskQueue) {
-			taskQueue <- struct{}{}
-			return
-		}
-		log.Warn("No task queue or task queue is full")
-	}
-}
-
-func rotateQueue() {
-	if shellQueue.Len() > 0 {
-		e := shellQueue.Front()
-		shellQueue.MoveToBack(e)
-	}
+	Wg = &sync.WaitGroup{}
 }
 
 func CommandLine(command string) ([]byte, error) {
-	wg.Wait()
+	Wg.Wait()
 	for shellQueue.Len() < maxQueueSize {
-		addSession()
+		addShell()
 	}
 
 	if taskQueue == nil {
 		return nil, fmt.Errorf("task queue is not initialized")
 	}
 
+	return dispatchTask(command)
+}
+
+func dispatchTask(command string) ([]byte, error) {
 	errChan := make(chan error)
 	result := make(chan []byte)
 
@@ -95,8 +74,9 @@ func CommandLine(command string) ([]byte, error) {
 		}(s)
 
 		select {
-		case <-time.After(300 * time.Second):
+		case <-time.After(1080 * time.Second):
 			s.busy = false
+			(*s.shell).Exit()
 			go RefreshShellQueue()
 			return nil, fmt.Errorf("timeout")
 		case err := <-errChan:
@@ -108,17 +88,42 @@ func CommandLine(command string) ([]byte, error) {
 	return nil, fmt.Errorf("no session available")
 }
 
+func addShell() {
+	Wg.Wait()
+	if shellQueue.Len() < maxQueueSize {
+		shell, err := powershell.New(&backend.Local{})
+		if err != nil {
+			panic(err)
+		}
+		newSession := &session{shell: &shell, busy: false}
+		shellQueue.PushBack(newSession)
+		// If there are sessions in the queue and taskQueue is not full, release a slot for the next task
+		if taskQueue != nil && len(taskQueue) < cap(taskQueue) {
+			taskQueue <- struct{}{}
+			return
+		}
+		log.Warn("No task queue or task queue is full")
+	}
+}
+
+func rotateQueue() {
+	if shellQueue.Len() > 0 {
+		e := shellQueue.Front()
+		shellQueue.MoveToBack(e)
+	}
+}
+
 func RefreshShellQueue() {
-	wg.Add(1)
-	defer wg.Done()
-	for shellQueue.Len() > 0 {
+	Wg.Add(1)
+	defer Wg.Done()
+	for shellQueue.Len() > 1 {
 		e := shellQueue.Front()
 		s := e.Value.(*session)
 		if s.busy {
 			rotateQueue()
 			continue
 		}
-		shellQueue.Remove(e)
 		(*s.shell).Exit()
+		shellQueue.Remove(e)
 	}
 }

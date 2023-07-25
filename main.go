@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"log"
 	"os"
 	"time"
 
@@ -14,6 +13,7 @@ import (
 )
 
 var logger service.Logger
+var log = utilities.Log
 
 type program struct {
 	exit chan struct{}
@@ -34,7 +34,7 @@ func (p *program) Start(s service.Service) error {
 
 func (p *program) run() {
 	c := utilities.ParseConfig()
-	rest.StartServer(c.Port, "1.3.0")
+	rest.StartServer(c.Port, "1.3.1")
 }
 
 func (p *program) Stop(s service.Service) error {
@@ -53,21 +53,28 @@ func main() {
 
 	utilities.Init()
 	utilities.SetupLogger()
+	utilities.Wg.Add(1)
+	go func() {
+		time.Sleep(10 * time.Second)
+		log.Info("Application started.")
+		utilities.Wg.Done()
+	}()
+
 	hyperv.Init()
 
 	go func() {
 		for {
 			time.Sleep(660 * time.Second)
 			hyperv.Refresh()
-			logger.Info("Hyper-V module reinitialized.")
+			log.Info("Hyper-V module reinitialized.")
 		}
 	}()
 
 	go func() {
 		for {
-			time.Sleep(2700 * time.Second)
+			time.Sleep(1919 * time.Second)
 			utilities.RefreshShellQueue()
-			logger.Info("Shell queue reinitialized.")
+			log.Info("Shell queue reinitialized.")
 		}
 	}()
 
