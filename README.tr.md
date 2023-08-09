@@ -13,25 +13,25 @@
 </a>
 
 <h2 align="center">wmi-rest</h2>
-<b>wmi-rest</b> is a tool for accessing Hyper-V VM information through RESTful APIs.
+<b>wmi-rest</b> Hyper-V sanal makine bilgilerine RESTful API'lar aracılığıyla erişim sağlamak için bir araçtır.
 </div>
 
 ---
 
-## Table of Contents
+## İçindekiler 
 
-- [Table of Contents](#table-of-contents)
-- [Installation](#installation)
-- [Usage](#usage)
-- [License](#license)
+- [İçindekiler](#i̇çindekiler)
+- [Kurulum](#kurulum)
+- [Kullanım](#kullanım)
+- [Lisans](#lisans)
 
 ---
 
-## Installation
+## Kurulum
 
-1. Create the `%PROGRAMFILES%\wmi-rest` directory.
-2. Copy the `wmi-rest.exe` file to the `%PROGRAMFILES%\wmi-rest` directory.
-3. Open Windows PowerShell as an administrator and execute the following commands:
+1. `%PROGRAMFILES%\wmi-rest` dizinini oluşturun.
+2. `wmi-rest.exe` dosyasını `%PROGRAMFILES%\wmi-rest` dizinine kopyalayın.
+3. Yönetici olarak Windows PowerShell'i açın ve aşağıdaki komutları çalıştırın:
 
 ```powershell
 PS C:\WINDOWS\system32> cd "$env:PROGRAMFILES\wmi-rest"
@@ -39,24 +39,24 @@ PS C:\Program Files\wmi-rest> .\wmi-rest.exe --service=install
 PS C:\Program Files\wmi-rest> .\wmi-rest.exe --service=start
 ```
 
-## Usage
+## Kullanım
 
-- All virtual machines: `/vms`
-- CPU information: `/vms/<VM-ID>/processor`
-- CPU information for all virtual machines: `/vms/all/processor`
-- RAM information: `/vms/<VM-ID>/memory`
-- RAM information for all virtual machines: `/vms/all/memory`
-- Disk information: `/vms/<VM-ID>/vhd`
-- Disk information for all virtual machines: `/vms/all/vhd`
-- Network information: `/vms/<VM-ID>/network`
-- Network information for all virtual machines: `/vms/all/network`
-- Version: `/version`
+- Tüm sanal makineler: `/vms`
+- CPU bilgileri: `/vms/<VM-ID>/processor`
+- Tüm sanal makinelerin CPU bilgileri: `/vms/all/processor`
+- RAM bilgileri: `/vms/<VM-ID>/memory`
+- Tüm sanal makinelerin RAM bilgileri: `/vms/all/memory`
+- Disk bilgileri: `/vms/<VM-ID>/vhd`
+- Tüm sanal makinelerin disk bilgileri: `/vms/all/vhd`
+- Ağ bilgileri: `/vms/<VM-ID>/network`
+- Tüm sanal makinelerin ağ bilgileri: `/vms/all/network`
+- Sürüm: `/version`
 
 ---
 
-## License
+## Lisans 
 
-wmi-rest is GPL-3.0 licensed. See [LICENSE](LICENSE) file for details.
+wmi-rest, GPL-3.0 lisanslıdır. Detaylar için [LICENSE](LICENSE) dosyasına bakınız.
 
 [contributors-shield]: https://img.shields.io/github/contributors/monobilisim/wmi-rest.svg?style=for-the-badge
 [contributors-url]: https://github.com/monobilisim/wmi-rest/graphs/contributors
