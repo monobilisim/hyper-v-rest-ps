@@ -8,7 +8,7 @@
 [![Readme in Turkish](https://img.shields.io/badge/Readme-Turkish-red)](README.tr.md)
 
 <div align="center"> 
-<a href="https://monobilisim.com.tr/">
+<a href="https://mono.net.tr/">
   <img src="https://monobilisim.com.tr/images/mono-bilisim.svg" width="340"/>
 </a>
 
