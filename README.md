@@ -12,8 +12,8 @@
   <img src="https://monobilisim.com.tr/images/mono-bilisim.svg" width="340"/>
 </a>
 
-<h2 align="center">wmi-rest</h2>
-<b>wmi-rest</b> is a tool for accessing Hyper-V VM information through RESTful APIs.
+<h2 align="center">hyper-v-api-ps</h2>
+<b>hyper-v-api-ps</b> is a tool for accessing Hyper-V VM information through RESTful APIs.
 </div>
 
 ---
