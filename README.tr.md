@@ -12,8 +12,8 @@
   <img src="https://monobilisim.com.tr/images/mono-bilisim.svg" width="340"/>
 </a>
 
-<h2 align="center">wmi-rest</h2>
-<b>wmi-rest</b> Hyper-V sanal makine bilgilerine RESTful API'lar aracılığıyla erişim sağlamak için bir araçtır.
+<h2 align="center">hyper-v-api-ps</h2>
+<b>hyper-v-api-ps</b> Hyper-V sanal makine bilgilerine RESTful API'lar aracılığıyla erişim sağlamak için bir araçtır.
 </div>
 
 ---
