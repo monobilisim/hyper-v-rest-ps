@@ -29,14 +29,14 @@
 
 ## Kurulum
 
-1. `%PROGRAMFILES%\wmi-rest` dizinini oluşturun.
-2. `wmi-rest.exe` dosyasını `%PROGRAMFILES%\wmi-rest` dizinine kopyalayın.
+1. `%PROGRAMFILES%\hyper-v-rest-ps` dizinini oluşturun.
+2. `hyper-v-rest-ps.exe` dosyasını `%PROGRAMFILES%\hyper-v-rest-ps` dizinine kopyalayın.
 3. Yönetici olarak Windows PowerShell'i açın ve aşağıdaki komutları çalıştırın:
 
 ```powershell
-PS C:\WINDOWS\system32> cd "$env:PROGRAMFILES\wmi-rest"
-PS C:\Program Files\wmi-rest> .\wmi-rest.exe --service=install
-PS C:\Program Files\wmi-rest> .\wmi-rest.exe --service=start
+PS C:\WINDOWS\system32> cd "$env:PROGRAMFILES\hyper-v-rest-ps"
+PS C:\Program Files\hyper-v-rest-ps> .\hyper-v-rest-ps.exe --service=install
+PS C:\Program Files\hyper-v-rest-ps> .\hyper-v-rest-ps.exe --service=start
 ```
 
 ## Kullanım
@@ -56,15 +56,15 @@ PS C:\Program Files\wmi-rest> .\wmi-rest.exe --service=start
 
 ## Lisans 
 
-wmi-rest, GPL-3.0 lisanslıdır. Detaylar için [LICENSE](LICENSE) dosyasına bakınız.
+hyper-v-rest-ps, GPL-3.0 lisanslıdır. Detaylar için [LICENSE](LICENSE) dosyasına bakınız.
 
-[contributors-shield]: https://img.shields.io/github/contributors/monobilisim/wmi-rest.svg?style=for-the-badge
-[contributors-url]: https://github.com/monobilisim/wmi-rest/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/monobilisim/wmi-rest.svg?style=for-the-badge
-[forks-url]: https://github.com/monobilisim/wmi-rest/network/members
-[stars-shield]: https://img.shields.io/github/stars/monobilisim/wmi-rest.svg?style=for-the-badge
-[stars-url]: https://github.com/monobilisim/wmi-rest/stargazers
-[issues-shield]: https://img.shields.io/github/issues/monobilisim/wmi-rest.svg?style=for-the-badge
-[issues-url]: https://github.com/monobilisim/wmi-rest/issues
-[license-shield]: https://img.shields.io/github/license/monobilisim/wmi-rest.svg?style=for-the-badge
-[license-url]: https://github.com/monobilisim/wmi-rest/blob/master/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors/monobilisim/hyper-v-rest-ps.svg?style=for-the-badge
+[contributors-url]: https://github.com/monobilisim/hyper-v-rest-ps/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/monobilisim/hyper-v-rest-ps.svg?style=for-the-badge
+[forks-url]: https://github.com/monobilisim/hyper-v-rest-ps/network/members
+[stars-shield]: https://img.shields.io/github/stars/monobilisim/hyper-v-rest-ps.svg?style=for-the-badge
+[stars-url]: https://github.com/monobilisim/hyper-v-rest-ps/stargazers
+[issues-shield]: https://img.shields.io/github/issues/monobilisim/hyper-v-rest-ps.svg?style=for-the-badge
+[issues-url]: https://github.com/monobilisim/hyper-v-rest-ps/issues
+[license-shield]: https://img.shields.io/github/license/monobilisim/hyper-v-rest-ps.svg?style=for-the-badge
+[license-url]: https://github.com/monobilisim/hyper-v-rest-ps/blob/master/LICENSE

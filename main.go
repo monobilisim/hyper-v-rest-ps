@@ -5,9 +5,9 @@ import (
 	"os"
 	"time"
 
-	"wmi-rest/hyperv"
-	"wmi-rest/rest"
-	"wmi-rest/utilities"
+	"hyper-v-rest-ps/hyperv"
+	"hyper-v-rest-ps/rest"
+	"hyper-v-rest-ps/utilities"
 
 	"github.com/kardianos/service"
 )
@@ -82,9 +82,9 @@ func main() {
 	options["Restart"] = "on-success"
 	options["SuccessExitStatus"] = "1 2 8 SIGKILL"
 	svcConfig := &service.Config{
-		Name:        "wmi-rest",
-		DisplayName: "WMI REST",
-		Description: "Simple REST service for some WMI features",
+		Name:        "hyper-v-rest-ps",
+		DisplayName: "Hyper-V REST PowerShell",
+		Description: "Simple REST service for some Hyper-V features.",
 		Option:      options,
 	}
 

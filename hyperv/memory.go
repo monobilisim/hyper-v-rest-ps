@@ -2,7 +2,7 @@ package hyperv
 
 import (
 	"net/http"
-	"wmi-rest/utilities"
+	"hyper-v-rest-ps/utilities"
 
 	"github.com/gin-gonic/gin"
 )

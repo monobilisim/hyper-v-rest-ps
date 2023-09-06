@@ -1,4 +1,4 @@
-module wmi-rest
+module hyper-v-rest-ps
 
 go 1.20
 

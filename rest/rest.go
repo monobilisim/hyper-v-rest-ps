@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-	"wmi-rest/hyperv"
+	"hyper-v-rest-ps/hyperv"
 
 	"github.com/gin-gonic/gin"
 )
