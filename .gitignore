@@ -1,4 +1,5 @@
 .idea/
-config.yml
-*.gob
+conf/config.yml
+packaging/Output
+packaging/*.exe
 *.exe

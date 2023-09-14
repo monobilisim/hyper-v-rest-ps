@@ -9,29 +9,53 @@ on:
 permissions:
   contents: write
   # packages: write
-  # issues: write
+# issues: write
 
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: pull repo
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - run: git fetch --force --tags
-      - uses: actions/setup-go@v4
+
+      - name: git fetch
+        run: git fetch --force --tags
+        
+      - name: setup go
+        uses: actions/setup-go@v4
         with:
           go-version: stable
-      # More assembly might be required: Docker logins, GPG, etc. It all depends
-      # on your needs.
-      - uses: goreleaser/goreleaser-action@v4
+
+      - name: set version in main.go
+        run: sed -i "s/rest.StartServer(c.Port, \"1.0.0\")/rest.StartServer(c.Port, \"$(git tag | sort -Vr | head -n 1)\")/g" $PWD/main.go
+
+      - name: build go     
+        uses: goreleaser/goreleaser-action@v4
         with:
-          # either 'goreleaser' (default) or 'goreleaser-pro':
           distribution: goreleaser
           version: latest
-          args: release --clean
+          args: release --clean --skip-publish --skip-validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Your GoReleaser Pro key, if you are using the 'goreleaser-pro'
-          # distribution:
-          # GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+
+      - name: innosetup
+        run: |
+          cp ./dist/hyper-v-rest-ps_windows_amd64_v1/hyper-v-rest-ps.exe packaging/hyper-v-rest-ps.exe
+          cd packaging/
+          docker build . --security-opt label=disable -t inno:64bit
+          bash ./iscc.sh 64 innosetup.iss
+          mv hyper-v-rest-ps.exe hyper-v-rest-ps-portable.exe
+
+      - name: upload release
+        id: create_release
+        uses: marvinpinto/action-automatic-releases@v1.2.1
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          title: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+          files: |
+            ./packaging/hyper-v-rest-ps-portable.exe
+            ./packaging/Output/hyper-v-rest-ps-setup.exe
