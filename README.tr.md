@@ -29,15 +29,10 @@
 
 ## Kurulum
 
-1. `%PROGRAMFILES%\hyper-v-rest-ps` dizinini oluşturun.
-2. `hyper-v-rest-ps.exe` dosyasını `%PROGRAMFILES%\hyper-v-rest-ps` dizinine kopyalayın.
-3. Yönetici olarak Windows PowerShell'i açın ve aşağıdaki komutları çalıştırın:
+1. [Releases](https://github.com/monobilisim/hyper-v-rest-ps/releases) sayfasına gidin.
+2. *Portable (taşınabilir, kurulumsuz)* veya *Setup (kurulumlu)* paketlerden birini indirin.
+3. Çalıştırın!
 
-```powershell
-PS C:\WINDOWS\system32> cd "$env:PROGRAMFILES\hyper-v-rest-ps"
-PS C:\Program Files\hyper-v-rest-ps> .\hyper-v-rest-ps.exe --service=install
-PS C:\Program Files\hyper-v-rest-ps> .\hyper-v-rest-ps.exe --service=start
-```
 
 ## Kullanım
 

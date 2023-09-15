@@ -29,15 +29,9 @@
 
 ## Installation
 
-1. Create the `%PROGRAMFILES%\hyper-v-rest-ps` directory.
-2. Copy the `hyper-v-rest-ps.exe` file to the `%PROGRAMFILES%\hyper-v-rest-ps` directory.
-3. Open Windows PowerShell as an administrator and execute the following commands:
-
-```powershell
-PS C:\WINDOWS\system32> cd "$env:PROGRAMFILES\hyper-v-rest-ps"
-PS C:\Program Files\hyper-v-rest-ps> .\hyper-v-rest-ps.exe --service=install
-PS C:\Program Files\hyper-v-rest-ps> .\hyper-v-rest-ps.exe --service=start
-```
+1. Go to the [Releases](https://github.com/monobilisim/hyper-v-rest-ps/releases) page.
+2. Download *portable* or *setup* package.
+3. Run it!
 
 ## Usage
 
