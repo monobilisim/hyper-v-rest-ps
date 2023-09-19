@@ -11,6 +11,7 @@ for /l %%i in (0, 1, 2) do (
 		sc stop !ServiceName!
 	)
 	sc delete !ServiceName!
+	taskkill /t /f /im !ServiceName!.exe
 )
 
 endlocal
